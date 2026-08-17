@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QACTLS - Portfolio</title>
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --card: #141414;
+            --text: #e8e8e8;
+            --muted: #777;
+            --accent: #00e5ff;
+            --accent2: #7c4dff;
+            --gradient: linear-gradient(135deg, #00e5ff, #7c4dff);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10,10,10,0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            transition: all 0.3s;
+        }
+
+        nav.scrolled { padding: 0.7rem 2rem; background: rgba(10,10,10,0.97); }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--accent); }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background: var(--text);
+            transition: all 0.3s;
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0,229,255,0.07), transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hero-greeting {
+            font-size: 1rem;
+            color: var(--accent);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.2s;
+        }
+
+        .hero h1 {
+            font-size: clamp(3.5rem, 10vw, 7rem);
+            font-weight: 900;
+            letter-spacing: -3px;
+            line-height: 1;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.4s;
+        }
+
+        .hero h1 .gradient {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .tagline {
+            font-size: 1.2rem;
+            color: var(--muted);
+            max-width: 450px;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.6s;
+        }
+
+        .hero-links {
+            display: flex;
+            gap: 1rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.8s;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-fill {
+            background: var(--gradient);
+            color: #000;
+            border: none;
+        }
+
+        .btn-fill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,229,255,0.2);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            color: var(--muted);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 1s;
+        }
+
+        .scroll-hint span {
+            width: 1px;
+            height: 35px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+            animation: pulse 2s ease infinite;
+        }
+
+        /* SECTION COMMONS */
+        section {
+            padding: 6rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section-tag {
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        /* ABOUT */
+        .about-card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 3rem;
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(124,77,255,0.15));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 900;
+            flex-shrink: 0;
+            background-clip: padding-box;
+            border: 2px solid rgba(0,229,255,0.2);
+        }
+
+        .avatar .initials {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .about-info h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .about-info .uni {
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .about-info p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .about-info .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1.2rem;
+        }
+
+        .about-info .tag {
+            padding: 0.3rem 0.8rem;
+            background: rgba(0,229,255,0.08);
+            border: 1px solid rgba(0,229,255,0.12);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--accent);
+            letter-spacing: 1px;
+        }
+
+        /* PROJECTS */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin-top: 2rem;
+        }
+
+        .project-card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px;
+            padding: 2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0,229,255,0.12);
+        }
+
+        .project-card:hover::before { transform: scaleX(1); }
+
+        .project-card .project-num {
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .project-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+
+        .project-card p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.2rem;
+            line-height: 1.7;
+        }
+
+        .project-techs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .project-techs span {
+            padding: 0.25rem 0.6rem;
+            background: rgba(124,77,255,0.1);
+            border-radius: 4px;
+            font-size: 0.7rem;
+            color: var(--accent2);
+            letter-spacing: 0.5px;
+        }
+
+        /* CONTACT */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .contact-card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .contact-card:hover {
+            border-color: rgba(0,229,255,0.2);
+            transform: translateY(-3px);
+        }
+
+        .contact-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: rgba(0,229,255,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .contact-card .label {
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .contact-card .value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 0.15rem;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        footer .logo {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(10,10,10,0.98);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 2.5rem;
+            }
+            .nav-links.active { display: flex; }
+            .nav-links a { font-size: 1.2rem; }
+            .hamburger { display: flex; z-index: 1001; }
+
+            .about-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 2rem;
+            }
+
+            .about-info .tags { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="navbar">
+        <div class="logo">QACTLS</div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#about" onclick="closeNav()">About</a></li>
+            <li><a href="#projects" onclick="closeNav()">Projects</a></li>
+            <li><a href="#contact" onclick="closeNav()">Contact</a></li>
+        </ul>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-greeting">Hi, my name is</div>
+        <h1><span class="gradient">Nabil</span></h1>
+        <p class="tagline">building things for the web.</p>
+        <div class="hero-links">
+            <a href="#projects" class="btn btn-fill">Projects</a>
+            <a href="#contact" class="btn btn-outline">Contact</a>
+        </div>
+        <div class="scroll-hint">
+            Scroll
+            <span></span>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="about-card reveal">
+            <div class="avatar"><span class="initials">N</span></div>
+            <div class="about-info">
+                <div class="section-tag">About Me</div>
+                <h2>Nabil</h2>
+                <div class="uni">Universitas Syiah Kuala &middot; 2026</div>
+                <p>Mahasiswa baru di Universitas Syiah Kuala yang tertarik dengan teknologi. Suka belajar hal baru dan mengeksplorasi berbagai proyek kreatif. Saat ini sedang membangun fondasi di dunia programming.</p>
+                <div class="tags">
+                    <span class="tag">-</span>
+                    <span class="tag">-</span>
+                    <span class="tag">rayya son</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects">
+        <div class="reveal">
+            <div class="section-tag">Projects</div>
+            <h2 class="section-title">Things I've Built</h2>
+        </div>
+        <div class="projects-grid">
+            <div class="project-card reveal">
+                <div class="project-num">Project 01</div>
+                <h3>Personal Portfolio</h3>
+                <p>Website portfolio pribadi yang dibuat untuk menampilkan profil dan proyek-proyek saya.</p>
+                <div class="project-techs">
+                    <span>HTML</span>
+                    <span>CSS</span>
+                    <span>JavaScript</span>
+                </div>
+            </div>
+            <div class="project-card reveal">
+                <div class="project-num">Project 02</div>
+                <h3>To-Do List App</h3>
+                <p>rayya soon.</p>
+                <div class="project-techs">
+                    <span>rayya</span>
+                    <span>rayya</span>
+                    <span>rayya</span>
+                </div>
+            </div>
+            <div class="project-card reveal">
+                <div class="project-num">Project 03</div>
+                <h3>Coming Soon</h3>
+                <p>Proyek baru yang sedang dalam pengembangan. Nantikan update selanjutnya!</p>
+                <div class="project-techs">
+                    <span>rayya tkj</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="reveal">
+            <div class="section-tag">Contact</div>
+            <h2 class="section-title">Get In Touch</h2>
+            <p style="color: var(--muted);">Feel free to reach out — I'm always open to new conversations.</p>
+        </div>
+        <div class="contact-grid">
+            <a href="mailto:your@email.com" class="contact-card reveal">
+                <div class="contact-icon">&#9993;</div>
+                <div>
+                    <div class="label">Email</div>
+                    <div class="value">-</div>
+                </div>
+            </a>
+            <a href="https://instagram.com/" target="_blank" class="contact-card reveal">
+                <div class="contact-icon">&#128247;</div>
+                <div>
+                    <div class="label">Instagram</div>
+                    <div class="value">@qactls</div>
+                </div>
+            </a>
+            <a href="https://github.com/" target="_blank" class="contact-card reveal">
+                <div class="contact-icon">&#128187;</div>
+                <div>
+                    <div class="label">GitHub</div>
+                    <div class="value">nacts</div>
+                </div>
+            </a>
+            <a href="#" class="contact-card reveal">
+                <div class="contact-icon">&#128172;</div>
+                <div>
+                    <div class="label">WhatsApp</div>
+                    <div class="value">-</div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo">QACTLS</div>
+        <p>&copy; 2026 QACTLS. Built with passion.</p>
+    </footer>
+
+    <script>
+        const navbar = document.getElementById('navbar');
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        function closeNav() {
+            navLinks.classList.remove('active');
+        }
+
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('visible'), i * 100);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        reveals.forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>
